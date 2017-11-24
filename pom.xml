@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.springframework.test</groupId>
+    <artifactId>spring-test-junit5</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <parent>
+        <groupId>de.is24</groupId>
+        <artifactId>pom-with-repositories-and-current-plugins</artifactId>
+        <version>1.39</version>
+    </parent>
+
+    <name>spring-test-junit5</name>
+    <url>https://github.com/sbrannen/spring-test-junit5</url>
+
+    <organization>
+        <name>Immobilien Scout GmbH</name>
+    </organization>
+
+    <scm>
+        <url>https://github.com/sbrannen/spring-test-junit5</url>
+    </scm>
+
+    <issueManagement>
+        <system>GITHUB</system>
+        <url>https://github.com/sbrannen/spring-test-junit5/issues</url>
+    </issueManagement>
+
+    <properties>
+        <java.version>1.8</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <build.timestamp>${maven.build.timestamp}</build.timestamp>
+        <hamcrestVersion>1.3</hamcrestVersion>
+        <jackson.version>2.8.5</jackson.version>
+        <jsonpath.version>2.2.0</jsonpath.version>
+        <junit.jupiter.version>5.0.2</junit.jupiter.version>
+        <junit.platform.version>1.0.2</junit.platform.version>
+        <log4j.version>2.8</log4j.version>
+        <servlet.api.version>3.1.0</servlet.api.version>
+        <spring.version>4.3.12.RELEASE</spring.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>${junit.jupiter.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>${junit.jupiter.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-runner</artifactId>
+            <version>${junit.platform.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+            <version>${spring.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>${servlet.api.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.jayway.jsonpath</groupId>
+            <artifactId>json-path</artifactId>
+            <version>${jsonpath.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-jcl</artifactId>
+            <version>${log4j.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-jul</artifactId>
+            <version>${log4j.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>${log4j.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <finalName>${artifactId}</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.7.0</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.19.1</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.junit.platform</groupId>
+                        <artifactId>junit-platform-surefire-provider</artifactId>
+                        <version>${junit.platform.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.junit.jupiter</groupId>
+                        <artifactId>junit-jupiter-engine</artifactId>
+                        <version>${junit.jupiter.version}</version>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <includes>
+                        <include>**/*.java</include>
+                    </includes>
+                    <!-- Sets the VM argument line used when unit tests are run. -->
+                    <argLine>${surefireArgLine}</argLine>
+                    <runOrder>hourly</runOrder>
+                </configuration>            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>http-proxy-profile</id>
+
+            <activation>
+                <property>
+                    <name>env.http.proxyHost</name>
+                </property>
+            </activation>
+
+            <properties>
+                <http.proxyHost>${env.http.proxyHost}</http.proxyHost>
+                <http.proxyPort>${env.http.proxyPort}</http.proxyPort>
+                <http.nonProxyHosts>${env.http.nonProxyHosts}</http.nonProxyHosts>
+            </properties>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>properties-maven-plugin</artifactId>
+                        <version>1.0-alpha-2</version>
+                        <executions>
+                            <execution>
+                                <id>setSystemProperties</id>
+                                <goals>
+                                    <goal>set-system-properties</goal>
+                                </goals>
+                                <configuration>
+                                    <properties>
+                                        <property>
+                                            <name>http.proxyHost</name>
+                                            <value>${env.http.proxyHost}</value>
+                                        </property>
+                                        <property>
+                                            <name>http.proxyPort</name>
+                                            <value>${env.http.proxyPort}</value>
+                                        </property>
+                                        <property>
+                                            <name>http.nonProxyHosts</name>
+                                            <value>${env.http.nonProxyHosts}</value>
+                                        </property>
+                                    </properties>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <systemPropertyVariables>
+                                <http.proxyHost>${env.http.proxyHost}</http.proxyHost>
+                                <http.proxyPort>${env.http.proxyPort}</http.proxyPort>
+                                <https.proxyHost>${env.http.proxyHost}</https.proxyHost>
+                                <https.proxyPort>${env.http.proxyPort}</https.proxyPort>
+                                <http.nonProxyHosts>${env.http.nonProxyHosts}</http.nonProxyHosts>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <configuration>
+                            <systemPropertyVariables>
+                                <http.proxyHost>${env.http.proxyHost}</http.proxyHost>
+                                <http.proxyPort>${env.http.proxyPort}</http.proxyPort>
+                                <https.proxyHost>${env.http.proxyHost}</https.proxyHost>
+                                <https.proxyPort>${env.http.proxyPort}</https.proxyPort>
+                                <http.nonProxyHosts>${env.http.nonProxyHosts}</http.nonProxyHosts>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </plugin>
+
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+</project>

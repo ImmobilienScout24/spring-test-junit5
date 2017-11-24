@@ -10,6 +10,7 @@ gradle-app.setting
 /.settings/
 /.project
 /bin/
+/target
 
 # IntelliJ
 .idea
